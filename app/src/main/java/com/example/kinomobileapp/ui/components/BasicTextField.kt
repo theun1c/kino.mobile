@@ -1,5 +1,6 @@
 package com.example.kinomobileapp.ui.components
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +24,10 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun BasicTextField(
     label: String,
-    placeholder: String
-){
-    var text by remember { mutableStateOf("") }
+    placeholder: String,
+    onValueChange: (String) -> Unit,
+    value: String
+) {
 
     Column {
         Text(
@@ -36,8 +38,8 @@ fun BasicTextField(
         )
 
         OutlinedTextField(
-            value = text,
-            onValueChange = { text = it },
+            value = value,
+            onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text(text = placeholder) },
             colors = OutlinedTextFieldDefaults.colors(
@@ -54,8 +56,12 @@ fun BasicTextField(
 @Preview
 @Composable
 fun BasicTextFieldPreview(){
+
+    var login by remember { mutableStateOf("") }
     BasicTextField(
         label = "Логин",
-        placeholder = "Введите почту"
+        placeholder = "Введите почту",
+        value = login,
+        onValueChange = { login = it }
     )
 }
