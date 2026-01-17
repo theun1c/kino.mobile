@@ -2,6 +2,7 @@ package com.example.kinomobileapp.ui.components
 
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,7 +23,8 @@ fun BasicButton(
     Button(
         onClick = {},
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(48.dp),
         shape = RoundedCornerShape(10.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if(isFormValid) Color(0xFF17418C) else Color(0xFF899FC6),
@@ -30,7 +32,8 @@ fun BasicButton(
             disabledContentColor = Color.LightGray,
             disabledContainerColor = Color(0xFF899FC6),
         ),
-        enabled = isFormValid
+        enabled = isFormValid,
+
     ) {
         Text(text = buttonText)
     }
