@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -27,11 +28,13 @@ import com.example.kinomobileapp.domain.models.Movie
 @Composable
 fun MovieCard(
     movie: Movie,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isDeleting: Boolean = false
 
 ){
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .alpha(if (isDeleting) 0.5f else 1f),
         verticalAlignment = Alignment.CenterVertically,
     ){
         // IMAGE

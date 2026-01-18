@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -45,6 +46,7 @@ fun MovieCatalogScreen(
     val movies by viewModel.movies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val deletingMovieId by viewModel.deletingMovieId.collectAsState()
 
     Column(
         modifier = Modifier
@@ -98,26 +100,43 @@ fun MovieCatalogScreen(
             ) {
 
                 items(movies) { movie ->
+
+                    val isDeletingThis = deletingMovieId == movie.id
+
                     Row (
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Center
 
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.trash_img),
+                        if(isDeletingThis){
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .width(20.dp)
+                                    .height(20.dp),
+                                strokeWidth = 2.dp
+                            )
+                        } else {
+                            IconButton(
+                                onClick = { viewModel.deleteMovie(movie.id)}
+                            ) {
+                                Image(
+                                    painter = painterResource(R.drawable.trash_img),
 
-                            contentDescription = "trash img",
-                            modifier = Modifier
-                                .width(20.dp)
-                                .height(20.dp)
-                        )
+                                    contentDescription = "trash img",
+                                    modifier = Modifier
+                                        .width(20.dp)
+                                        .height(20.dp)
+                                )
+                            }
+                        }
 
                         Spacer(modifier = Modifier.width(10.dp))
 
                         MovieCard(
                             movie = movie,
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(16.dp),
+                            isDeleting = isDeletingThis
                         )
                     }
                     // Разделитель после каждого элемента, кроме последнего
