@@ -1,5 +1,6 @@
 package com.example.kinomobileapp.ui.screens
 
+import android.media.Rating
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -21,8 +25,22 @@ import androidx.compose.ui.unit.dp
 import com.example.kinomobileapp.ui.components.MovieCard
 import com.example.kinomobileapp.R
 
+
+data class MovieData(
+    val rating: String,
+    val name: String
+)
+
 @Composable
 fun MovieCatalogScreen(){
+
+    val movieList = listOf(
+        MovieData("8.1", "Интерстеллар"),
+        MovieData("3.1", "Интерстеллар55"),
+        MovieData("4.1", "Интерстеллар3"),
+        MovieData("1.1", "Интерстеллар2"),
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -36,30 +54,43 @@ fun MovieCatalogScreen(){
 
         // lazy column with film-card components
 
-        Row (
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Image(
-                painter = painterResource(R.drawable.trash_img),
 
-                contentDescription = "trash img",
-                modifier = Modifier
-                    .width(20.dp)
-                    .height(20.dp)
-            )
+            items(movieList) { movie ->
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
 
-            Spacer(modifier = Modifier.width(10.dp))
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.trash_img),
 
-            MovieCard(
-                cardRating = "8,7",
-                cardName = "Интерстеллар"
-            )
+                        contentDescription = "trash img",
+                        modifier = Modifier
+                            .width(20.dp)
+                            .height(20.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(10.dp))
+
+                    MovieCard(
+                        cardRating = movie.rating,
+                        cardName = movie.name
+                    )
+                }
+                // Разделитель после каждого элемента, кроме последнего
+                if (movie != movieList.last()) {
+                    Divider(
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        color = Color(0xFF4CBBBF),
+                        thickness = 1.dp,
+                    )
+                }
+            }
         }
-
-
     }
 }
 

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -17,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,18 +31,18 @@ fun MovieCard(
 
 ){
     Row(
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
     ){
 
         Image(
             painter = painterResource(R.drawable.film_img),
             contentScale = ContentScale.Fit,
-            contentDescription = "film img",пе
-            modifier = Modifier.height(50.dp)
+            contentDescription = "film img",
+            modifier = Modifier.height(80.dp)
+                .weight(1f)
         )
 
-        Spacer(modifier = Modifier.width(60.dp))
 
         Text(
             text = cardName,
@@ -48,20 +50,23 @@ fun MovieCard(
             fontFamily = FontFamily(Font(R.font.roboto)),
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
+            modifier = Modifier.weight(2f),
+            textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.width(60.dp))
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.weight(1f)
         ){
 
             Image(
                 painter = painterResource(R.drawable.star),
                 contentScale = ContentScale.Fit,
                 contentDescription = "star",
-                modifier = Modifier.height(120.dp)
+                modifier = Modifier.height(120.dp),
+
             )
 
             Spacer(modifier = Modifier.width(2.dp))
