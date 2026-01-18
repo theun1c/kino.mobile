@@ -1,9 +1,13 @@
 package com.example.kinomobileapp.data.api
 
+import com.example.kinomobileapp.domain.models.LoginRequest
+import com.example.kinomobileapp.domain.models.LoginResponse
 import com.example.kinomobileapp.domain.models.MovieResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -16,4 +20,9 @@ interface PocketBaseApi {
 
     @DELETE("/api/collections/movies/records/{id}")
     suspend fun deleteMovie(@Path("id") id: String): Response<Unit>
+
+    @POST("api/collections/users/auth-with-password")
+    suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
+
+
 }
