@@ -41,6 +41,14 @@ import com.example.kinomobileapp.ui.components.BasicButton
 @Composable
 fun AddScreen(
 ) {
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var kinopoiskRating by remember { mutableStateOf("") }
+    var imdbRating by remember { mutableStateOf("") }
+    var genre by remember { mutableStateOf("") }
+    var countries by remember { mutableStateOf("") }
+    var director by remember { mutableStateOf("") }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,8 +58,8 @@ fun AddScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             BasicTextField(
-                value = "Интерстеллар",
-                onValueChange = {},
+                value = title,
+                onValueChange = {title = it},
                 modifier = Modifier
                     .height(36.dp)
                     .border(
@@ -71,6 +79,14 @@ fun AddScreen(
                             .padding(4.dp),
                         contentAlignment = Alignment.Center
                     ) {
+                        if(title.isEmpty()){
+                            Text(
+                                text = "Название фильма",
+                                color = Color.Gray,
+                                textAlign = TextAlign.Center,
+                                fontSize = 18.sp
+                            )
+                        }
                         innerTextField()
                     }
                 }
@@ -99,8 +115,8 @@ fun AddScreen(
         Spacer(modifier = Modifier.height(2.dp))
 
         BasicTextField(
-            value = "\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"",
-            onValueChange = {},
+            value = description,
+            onValueChange = { description = it },
             modifier = Modifier
                 .height(220.dp)
                 .border(
@@ -139,8 +155,8 @@ fun AddScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     BasicTextField(
-                        value = "8,6",
-                        onValueChange = {},
+                        value =kinopoiskRating,
+                        onValueChange = { kinopoiskRating = it },
                         modifier = Modifier
                             .border(
                                 width = 1.dp,
@@ -169,9 +185,8 @@ fun AddScreen(
                         text = "из 10",
                         fontSize = 10.sp,
                         textAlign = TextAlign.Center,
-                        color = Color(0xFF17418C),
-
-                        )
+                        color = Color(0xFF17418C)
+                    )
                 }
 
             }
@@ -189,8 +204,8 @@ fun AddScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ){
                     BasicTextField(
-                        value = "10,0",
-                        onValueChange = {},
+                        value = imdbRating,
+                        onValueChange = { imdbRating = it },
                         modifier = Modifier
                             .border(
                                 width = 1.dp,
@@ -237,8 +252,8 @@ fun AddScreen(
             )
 
             BasicTextField(
-                value = "фантастика, драма, приключения",
-                onValueChange = {},
+                value = genre,
+                onValueChange = {genre = it},
                 modifier = Modifier
                     .border(
                         width = 1.dp,
@@ -273,8 +288,8 @@ fun AddScreen(
             )
 
             BasicTextField(
-                value = "США, Великобритания, Канада",
-                onValueChange = {},
+                value = countries,
+                onValueChange = { countries = it },
                 modifier = Modifier
                     .border(
                         width = 1.dp,
@@ -309,8 +324,8 @@ fun AddScreen(
             )
 
             BasicTextField(
-                value = "Кристофер Нолан",
-                onValueChange = {},
+                value = director,
+                onValueChange = { director = it },
                 modifier = Modifier
                     .border(
                         width = 1.dp,
