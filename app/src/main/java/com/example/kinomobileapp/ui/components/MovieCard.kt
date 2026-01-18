@@ -36,7 +36,7 @@ fun MovieCard(
         Image(
             painter = painterResource(R.drawable.film_img),
             contentScale = ContentScale.Fit,
-            contentDescription = "film img",
+            contentDescription = "film img",пе
             modifier = Modifier.height(50.dp)
         )
 
