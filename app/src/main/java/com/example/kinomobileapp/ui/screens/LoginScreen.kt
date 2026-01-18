@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,17 +24,39 @@ import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.kinomobileapp.ui.components.BasicButton
 import com.example.kinomobileapp.ui.components.BasicTextField
 import com.example.kinomobileapp.R
+import com.example.kinomobileapp.ui.viewmodels.AuthViewModel
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(
+   navController: NavController = rememberNavController(),
+   viewModel: AuthViewModel = hiltViewModel(),
+   onLoginSuccess: () -> Unit = { navController.navigate("movie_catalog") }
+){
 
    var email by remember { mutableStateOf("") }
    var password by remember { mutableStateOf("") }
 
+   val isLoading by viewModel.isLoading.collectAsState()
+   val error by viewModel.error.collectAsState()
+   val loginSuccess by viewModel.loginSuccess.collectAsState()
+
    var isFormValid = email.isNotEmpty() && password.isNotEmpty()
+
+   LaunchedEffect(loginSuccess) {
+      if(loginSuccess){
+         onLoginSuccess
+      }
+   }
+
+   LaunchedEffect(Unit) {
+      viewModel.resetState()
+   }
 
    Column(
       modifier = Modifier
@@ -56,7 +80,8 @@ fun LoginScreen(){
          label = "Логин",
          placeholder = "Введите почту",
          value = email,
-         onValueChange = { email = it }
+         onValueChange = { email = it },
+         enable = !isLoading
       )
 
       Spacer(modifier = Modifier.height(16.dp))
@@ -65,16 +90,23 @@ fun LoginScreen(){
          label = "Пароль",
          placeholder = "Введите пароль",
          value = password,
-         onValueChange = { password = it }
+         onValueChange = { password = it },
+         enable = !isLoading,
+         isPassword = true
+
       )
 
       Spacer(modifier = Modifier.height(100.dp))
 
       // btm
       BasicButton(
-         onClick = {},
+         onClick = {
+            if(isFormValid){
+               viewModel.login(email, password)
+            }
+         },
          isFormValid = isFormValid,
-         buttonText = "Далее"
+         buttonText = if(isLoading) "Вход..." else "Далее"
       )
    }
 }

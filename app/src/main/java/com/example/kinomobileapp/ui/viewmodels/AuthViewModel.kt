@@ -48,4 +48,9 @@ class AuthViewModel @Inject constructor(
             }
         }
     }
+
+    fun resetState(){
+        _error.value = null
+        _loginSuccess.value = false
+    }
 }
