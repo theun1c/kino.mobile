@@ -12,3 +12,7 @@ data class Movie(
     @SerializedName("country") val country: String,
     @SerializedName("director") val director: String
 )
+
+data class MovieResponse(
+    @SerializedName("items") val items: List<Movie>
+)
