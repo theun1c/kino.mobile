@@ -29,20 +29,9 @@ fun MovieCard(
 
 ){
     Row(
-//        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
-        Image(
-            painter = painterResource(R.drawable.trash_img),
-
-            contentDescription = "trash img",
-            modifier = Modifier
-                .width(20.dp)
-                .height(20.dp)
-        )
-
-        Spacer(modifier = Modifier.width(10.dp))
 
         Image(
             painter = painterResource(R.drawable.film_img),
@@ -51,7 +40,7 @@ fun MovieCard(
             modifier = Modifier.height(50.dp)
         )
 
-        Spacer(modifier = Modifier.width(40.dp))
+        Spacer(modifier = Modifier.width(60.dp))
 
         Text(
             text = cardName,
@@ -61,7 +50,7 @@ fun MovieCard(
             fontSize = 16.sp,
         )
 
-        Spacer(modifier = Modifier.width(40.dp))
+        Spacer(modifier = Modifier.width(60.dp))
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
