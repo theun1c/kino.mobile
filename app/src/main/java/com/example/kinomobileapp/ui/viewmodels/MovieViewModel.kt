@@ -24,6 +24,10 @@ class MovieViewModel @Inject constructor(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    private val _deletingMovieId = MutableStateFlow<String?>(null)
+    val deletingMovieId: StateFlow<String?> = _deletingMovieId.asStateFlow()
+
+
     init {
         loadMovies()
     }
@@ -40,6 +44,28 @@ class MovieViewModel @Inject constructor(
                 _error.value = "Error loading data: ${e.message}"
             } finally {
                 _isLoading.value = false
+            }
+        }
+    }
+
+    fun deleteMovie(movieId: String){
+        viewModelScope.launch {
+            _deletingMovieId.value = movieId
+
+            try {
+                val isDeleted = repository.deleteMovie(movieId)
+
+                if(isDeleted){
+                    val currentMovies = _movies.value.toMutableList()
+                    currentMovies.removeAll { it.id == movieId }
+                    _movies.value = currentMovies
+                } else {
+                    _error.value = "Не удалось удалить фильм"
+                }
+            } catch (e: Exception) {
+                _error.value = "Ошибка удаления: ${e.message}"
+            } finally {
+                _deletingMovieId.value = null
             }
         }
     }
