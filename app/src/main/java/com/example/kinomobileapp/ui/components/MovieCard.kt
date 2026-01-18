@@ -22,29 +22,30 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.kinomobileapp.R
+import com.example.kinomobileapp.domain.models.Movie
 
 @Composable
 fun MovieCard(
-    cardName: String,
-    cardRating: String,
+    movie: Movie,
+    modifier: Modifier = Modifier
 
 ){
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ){
-
+        // IMAGE
         Image(
             painter = painterResource(R.drawable.film_img),
             contentScale = ContentScale.Fit,
             contentDescription = "film img",
-            modifier = Modifier.height(80.dp)
+            modifier = Modifier
+                .height(80.dp)
                 .weight(1f)
         )
 
-
         Text(
-            text = cardName,
+            text = movie.title,
             color = Color(0xFF17418C),
             fontFamily = FontFamily(Font(R.font.roboto)),
             fontWeight = FontWeight.Normal,
@@ -52,7 +53,6 @@ fun MovieCard(
             modifier = Modifier.weight(2f),
             textAlign = TextAlign.Center
         )
-
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -71,7 +71,7 @@ fun MovieCard(
             Spacer(modifier = Modifier.width(2.dp))
 
             Text(
-                text = cardRating,
+                text = movie.ratingIMDB.toString(),
                 color = Color(0xFF17418C),
                 fontFamily = FontFamily(Font(R.font.roboto)),
                 fontWeight = FontWeight.Normal,
@@ -84,8 +84,18 @@ fun MovieCard(
 @Preview
 @Composable
 fun MovieCardPreview(){
+    val movie = Movie(
+        id = "id_123",
+        title = "asdasd",
+        description = "descr",
+        ratingKinoPoisk = 10.0,
+        genre = "genre1",
+        country = "country 1",
+        director = "directo1",
+        ratingIMDB = 9.1,
+    )
+
     MovieCard(
-        cardRating = "8,7",
-        cardName = "Интерстеллар"
+        movie = movie,
     )
 }
