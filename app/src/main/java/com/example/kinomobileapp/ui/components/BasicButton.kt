@@ -17,7 +17,7 @@ import io.ktor.websocket.Frame
 @Composable
 fun BasicButton(
     buttonText: String,
-    isFormValid: Boolean,
+    isFormValid: Boolean = false,
     onClick: () -> Unit,
     isLoading: Boolean = false
 ){

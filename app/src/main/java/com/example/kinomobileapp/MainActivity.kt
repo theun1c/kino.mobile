@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.kinomobileapp.ui.components.MovieCard
 import com.example.kinomobileapp.ui.navigation.AppNavigation
+import com.example.kinomobileapp.ui.screens.AddScreen
 import com.example.kinomobileapp.ui.screens.LoginScreen
 import com.example.kinomobileapp.ui.screens.MovieCatalogScreen
 import com.example.kinomobileapp.ui.theme.KinomobileappTheme
@@ -32,8 +33,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-                    val navController = rememberNavController()
-                    AppNavigation(navController)
+//                    val navController = rememberNavController()
+//                    AppNavigation(navController)
+                    AddScreen()
                 }
             }
         }
