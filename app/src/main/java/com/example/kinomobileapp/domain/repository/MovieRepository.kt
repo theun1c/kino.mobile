@@ -10,8 +10,15 @@ class MovieRepository @Inject constructor(
     suspend fun getMovies(): List<Movie> {
         return try {
             val response = api.getMovies()
+            println("✅ Получено фильмов: ${response.items.size}")
+            response.items.forEach { movie ->
+                println("🎬 ${movie.title} - ${movie.ratingKinoPoisk}")
+            }
             response.items
+
         } catch (e: Exception){
+            println("❌ Ошибка загрузки фильмов: ${e.message}")
+            e.printStackTrace()  // добавим стектрейс
             emptyList()
         }
     }

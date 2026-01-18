@@ -17,7 +17,9 @@ import com.example.kinomobileapp.ui.components.MovieCard
 import com.example.kinomobileapp.ui.screens.LoginScreen
 import com.example.kinomobileapp.ui.screens.MovieCatalogScreen
 import com.example.kinomobileapp.ui.theme.KinomobileappTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
