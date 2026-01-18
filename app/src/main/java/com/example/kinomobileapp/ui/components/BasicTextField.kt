@@ -30,10 +30,8 @@ fun BasicTextField(
     onValueChange: (String) -> Unit,
     value: String,
     isPassword: Boolean = false,
-    enable: Boolean = true
+    enabled: Boolean = true
 ) {
-
-
 
     Column {
         Text(

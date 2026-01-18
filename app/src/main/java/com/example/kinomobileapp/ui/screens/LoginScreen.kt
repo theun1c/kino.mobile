@@ -50,7 +50,7 @@ fun LoginScreen(
 
    LaunchedEffect(loginSuccess) {
       if(loginSuccess){
-         onLoginSuccess
+         onLoginSuccess()
       }
    }
 
@@ -74,6 +74,14 @@ fun LoginScreen(
             .fillMaxWidth()
             .height(340.dp)
       )
+      // ДОБАВЬ СООБЩЕНИЕ ОБ ОШИБКЕ
+      if (error != null) {
+         Text(
+            text = error!!,
+            color = androidx.compose.material3.MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(bottom = 16.dp)
+         )
+      }
 
       // 2 TF
       BasicTextField(
@@ -81,7 +89,7 @@ fun LoginScreen(
          placeholder = "Введите почту",
          value = email,
          onValueChange = { email = it },
-         enable = !isLoading
+         enabled = !isLoading
       )
 
       Spacer(modifier = Modifier.height(16.dp))
@@ -91,7 +99,7 @@ fun LoginScreen(
          placeholder = "Введите пароль",
          value = password,
          onValueChange = { password = it },
-         enable = !isLoading,
+         enabled = !isLoading,
          isPassword = true
 
       )
@@ -106,7 +114,8 @@ fun LoginScreen(
             }
          },
          isFormValid = isFormValid,
-         buttonText = if(isLoading) "Вход..." else "Далее"
+         buttonText = if(isLoading) "Вход..." else "Далее",
+         isLoading = isLoading
       )
    }
 }

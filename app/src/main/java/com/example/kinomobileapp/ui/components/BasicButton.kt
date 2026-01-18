@@ -18,10 +18,11 @@ import io.ktor.websocket.Frame
 fun BasicButton(
     buttonText: String,
     isFormValid: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isLoading: Boolean = false
 ){
     Button(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
@@ -32,7 +33,7 @@ fun BasicButton(
             disabledContentColor = Color.LightGray,
             disabledContainerColor = Color(0xFF899FC6),
         ),
-        enabled = isFormValid,
+        enabled = isFormValid && !isLoading,
 
     ) {
         Text(text = buttonText)
