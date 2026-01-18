@@ -16,6 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,8 +28,12 @@ fun BasicTextField(
     label: String,
     placeholder: String,
     onValueChange: (String) -> Unit,
-    value: String
+    value: String,
+    isPassword: Boolean = false,
+    enable: Boolean = true
 ) {
+
+
 
     Column {
         Text(
@@ -48,7 +54,12 @@ fun BasicTextField(
                 focusedBorderColor = Color(0xFF4CBBBF),
                 unfocusedBorderColor = Color(0xFF4CBBBF),
             ),
-            shape = RoundedCornerShape(18.dp)
+            shape = RoundedCornerShape(18.dp),
+            visualTransformation = if(isPassword){
+                PasswordVisualTransformation()
+            } else {
+                VisualTransformation.None
+            }
         )
     }
 }
