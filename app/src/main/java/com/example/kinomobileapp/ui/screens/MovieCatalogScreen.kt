@@ -2,6 +2,7 @@ package com.example.kinomobileapp.ui.screens
 
 import android.media.Rating
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -43,9 +45,8 @@ data class MovieData(
 
 @Composable
 fun MovieCatalogScreen(
-    viewModel: MovieViewModel,
-    navController: NavController = rememberNavController(),
-    onPlusClick: () -> Unit = { navController.navigate("add_screen")}
+    viewModel: MovieViewModel = hiltViewModel(),
+    navController: NavController = rememberNavController()
 ){
     val movies by viewModel.movies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -56,15 +57,16 @@ fun MovieCatalogScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
-        )
-    {
-        Row(){
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ){
             Text(
                 text = "Каталог фильмов:",
                 color = Color(0xFF17418C)
             )
-
-            Spacer(modifier = Modifier.width(100.dp))
 
             IconButton(
                 onClick = {
@@ -73,12 +75,11 @@ fun MovieCatalogScreen(
             ) {
                 Image(
                     painter = painterResource(R.drawable.plus),
-                    contentDescription = "plus",
-
+                    contentDescription = "Добавить фильм",
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }
-
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -105,7 +106,7 @@ fun MovieCatalogScreen(
                 Button(
                     onClick = { viewModel.loadMovies() }
                 ) {
-                    Text(text = "Retry")
+                    Text(text = "Повторить")
                 }
             }
         } else if (movies.isEmpty()) {
@@ -119,47 +120,56 @@ fun MovieCatalogScreen(
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
                 items(movies) { movie ->
-
                     val isDeletingThis = deletingMovieId == movie.id
 
-                    Row (
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-
+                    // ОБЕРНЕМ В КЛИКАБЕЛЬНЫЙ КОНТЕЙНЕР
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                // ПЕРЕХОД НА ЭКРАН РЕДАКТИРОВАНИЯ С ID
+                                navController.navigate("update_screen/${movie.id}")
+                            }
                     ) {
-                        if(isDeletingThis){
-                            CircularProgressIndicator(
-                                modifier = Modifier
-                                    .width(20.dp)
-                                    .height(20.dp),
-                                strokeWidth = 2.dp
-                            )
-                        } else {
-                            IconButton(
-                                onClick = { viewModel.deleteMovie(movie.id)}
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.trash_img),
-
-                                    contentDescription = "trash img",
+                        Row (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            if(isDeletingThis){
+                                CircularProgressIndicator(
                                     modifier = Modifier
                                         .width(20.dp)
-                                        .height(20.dp)
+                                        .height(20.dp),
+                                    strokeWidth = 2.dp
                                 )
+                            } else {
+                                IconButton(
+                                    onClick = { viewModel.deleteMovie(movie.id) }
+                                ) {
+                                    Image(
+                                        painter = painterResource(R.drawable.trash_img),
+                                        contentDescription = "Удалить фильм",
+                                        modifier = Modifier
+                                            .width(20.dp)
+                                            .height(20.dp)
+                                    )
+                                }
                             }
+
+                            Spacer(modifier = Modifier.width(10.dp))
+
+                            MovieCard(
+                                movie = movie,
+                                modifier = Modifier.padding(16.dp),
+                                isDeleting = isDeletingThis
+                            )
                         }
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        MovieCard(
-                            movie = movie,
-                            modifier = Modifier.padding(16.dp),
-                            isDeleting = isDeletingThis
-                        )
                     }
+
                     // Разделитель после каждого элемента, кроме последнего
                     if (movie != movies.last()) {
                         Divider(
@@ -171,13 +181,11 @@ fun MovieCatalogScreen(
                 }
             }
         }
-
-
     }
 }
 
-//@Preview
-//@Composable
-//fun MovieCatalogScreenPreview(){
-//    MovieCatalogScreen()
-//}
+@Preview
+@Composable
+fun MovieCatalogScreenPreview(){
+    MovieCatalogScreen()
+}

@@ -28,8 +28,9 @@ import com.example.kinomobileapp.domain.models.Movie
 @Composable
 fun MovieCard(
     movie: Movie,
-    modifier: Modifier = Modifier,
-    isDeleting: Boolean = false
+    isDeleting: Boolean = false,
+    onClick: (() -> Unit)? = null,
+    modifier: Modifier = Modifier
 
 ){
     Row(

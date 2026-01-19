@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -29,4 +30,12 @@ interface PocketBaseApi {
     @POST("api/collections/movies/records")
     suspend fun createMovie(@Body movie: Movie): Response<Movie>
 
+    @GET("api/collections/movies/records/{id}")
+    suspend fun getMovieById(@Path("id") id: String): Movie
+
+    @PATCH("api/collections/movies/records/{id}")
+    suspend fun updateMovie(
+        @Path("id") id: String,
+        @Body movie: Movie
+    ): Response<Movie>
 }

@@ -45,4 +45,31 @@ class MovieRepository @Inject constructor(
             Result.failure(e)
         }
     }
+
+    suspend fun updateMovie(movie: Movie): Result<Movie> {
+        return try {
+            val response = api.updateMovie(movie.id, movie)
+            if (response.isSuccessful) {
+                val updatedMovie = response.body()
+                if (updatedMovie != null) {
+                    Result.success(updatedMovie)
+                } else {
+                    Result.failure(Exception("Пустой ответ от сервера"))
+                }
+            } else {
+                Result.failure(Exception("Ошибка обновления: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getMovieById(id: String): Result<Movie> {
+        return try {
+            val movie = api.getMovieById(id)
+            Result.success(movie)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
