@@ -1,6 +1,8 @@
 package com.example.kinomobileapp.domain.repository
 
+import androidx.compose.ui.graphics.RectangleShape
 import com.example.kinomobileapp.data.api.PocketBaseApi
+import com.example.kinomobileapp.domain.models.CreateMovieRequest
 import com.example.kinomobileapp.domain.models.Movie
 import javax.inject.Inject
 
@@ -23,6 +25,24 @@ class MovieRepository @Inject constructor(
             response.isSuccessful
         } catch (e: Exception) {
             false
+        }
+    }
+
+    suspend fun createMovie(movie: Movie): Result<Movie> {
+        return try {
+            val response = api.createMovie(movie)
+            if (response.isSuccessful) {
+                val createdMovie = response.body()
+                if (createdMovie != null) {
+                    Result.success(createdMovie)
+                } else {
+                    Result.failure(Exception("Пустой ответ от сервера"))
+                }
+            } else {
+                Result.failure(Exception("Ошибка: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 }

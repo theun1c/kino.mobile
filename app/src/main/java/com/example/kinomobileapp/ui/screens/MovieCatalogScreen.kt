@@ -29,6 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.kinomobileapp.ui.components.MovieCard
 import com.example.kinomobileapp.R
 import com.example.kinomobileapp.ui.viewmodels.MovieViewModel
@@ -41,7 +43,9 @@ data class MovieData(
 
 @Composable
 fun MovieCatalogScreen(
-    viewModel: MovieViewModel = hiltViewModel()
+    viewModel: MovieViewModel,
+    navController: NavController = rememberNavController(),
+    onPlusClick: () -> Unit = { navController.navigate("add_screen")}
 ){
     val movies by viewModel.movies.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
@@ -54,10 +58,27 @@ fun MovieCatalogScreen(
             .padding(32.dp),
         )
     {
-        Text(
-            text = "Каталог фильмов:",
-            color = Color(0xFF17418C)
-        )
+        Row(){
+            Text(
+                text = "Каталог фильмов:",
+                color = Color(0xFF17418C)
+            )
+
+            Spacer(modifier = Modifier.width(100.dp))
+
+            IconButton(
+                onClick = {
+                    navController.navigate("add_screen")
+                }
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.plus),
+                    contentDescription = "plus",
+
+                )
+            }
+        }
+
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -155,8 +176,8 @@ fun MovieCatalogScreen(
     }
 }
 
-@Preview
-@Composable
-fun MovieCatalogScreenPreview(){
-    MovieCatalogScreen()
-}
+//@Preview
+//@Composable
+//fun MovieCatalogScreenPreview(){
+//    MovieCatalogScreen()
+//}

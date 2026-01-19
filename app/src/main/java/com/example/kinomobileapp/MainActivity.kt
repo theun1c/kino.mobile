@@ -33,9 +33,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ){
-//                    val navController = rememberNavController()
-//                    AppNavigation(navController)
-                    AddScreen()
+                    val navController = rememberNavController()
+                    AppNavigation(navController)
                 }
             }
         }

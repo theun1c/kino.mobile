@@ -27,7 +27,6 @@ class MovieViewModel @Inject constructor(
     private val _deletingMovieId = MutableStateFlow<String?>(null)
     val deletingMovieId: StateFlow<String?> = _deletingMovieId.asStateFlow()
 
-
     init {
         loadMovies()
     }
@@ -48,19 +47,16 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    fun deleteMovie(movieId: String){
+    fun deleteMovie(movieId: String) {
         viewModelScope.launch {
             _deletingMovieId.value = movieId
-
             try {
                 val isDeleted = repository.deleteMovie(movieId)
-
-                if(isDeleted){
+                if (isDeleted) {
+                    // Обновляем локальный список
                     val currentMovies = _movies.value.toMutableList()
                     currentMovies.removeAll { it.id == movieId }
                     _movies.value = currentMovies
-                } else {
-                    _error.value = "Не удалось удалить фильм"
                 }
             } catch (e: Exception) {
                 _error.value = "Ошибка удаления: ${e.message}"

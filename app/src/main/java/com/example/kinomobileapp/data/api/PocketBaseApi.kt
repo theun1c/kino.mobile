@@ -1,7 +1,9 @@
 package com.example.kinomobileapp.data.api
 
+import com.example.kinomobileapp.domain.models.CreateMovieRequest
 import com.example.kinomobileapp.domain.models.LoginRequest
 import com.example.kinomobileapp.domain.models.LoginResponse
+import com.example.kinomobileapp.domain.models.Movie
 import com.example.kinomobileapp.domain.models.MovieResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -24,5 +26,7 @@ interface PocketBaseApi {
     @POST("api/collections/users/auth-with-password")
     suspend fun login(@Body loginRequest: LoginRequest): Response<LoginResponse>
 
+    @POST("api/collections/movies/records")
+    suspend fun createMovie(@Body movie: Movie): Response<Movie>
 
 }

@@ -11,13 +11,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,11 +41,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.kinomobileapp.R
 import com.example.kinomobileapp.ui.components.BasicButton
+import com.example.kinomobileapp.ui.viewmodels.AddMovieViewModel
 
 @Composable
 fun AddScreen(
+    navController: NavController = rememberNavController(),
+    viewModel: AddMovieViewModel = hiltViewModel(),
+    onMovieAdded: () -> Unit = {}
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -49,313 +62,347 @@ fun AddScreen(
     var countries by remember { mutableStateOf("") }
     var director by remember { mutableStateOf("") }
 
+    val isLoading by viewModel.isLoading.collectAsState()
+    val error by viewModel.error.collectAsState()
+    val addSuccess by viewModel.addSuccess.collectAsState()
+
+    // Обработка успешного добавления
+    LaunchedEffect(addSuccess) {
+        if (addSuccess) {
+            onMovieAdded()
+            // Возвращаемся назад после небольшой задержки
+            kotlinx.coroutines.delay(500)
+            navController.popBackStack()
+            viewModel.resetState()
+        }
+    }
+
+    // Проверка валидности формы
+    val isFormValid = title.isNotEmpty() &&
+            description.isNotEmpty() &&
+            kinopoiskRating.isNotEmpty() &&
+            imdbRating.isNotEmpty()
+
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(32.dp),
+            .fillMaxSize()
+            .padding(horizontal = 32.dp, vertical = 16.dp),
     ) {
-        Column (
-            horizontalAlignment = Alignment.CenterHorizontally
+//        // Заголовок с кнопкой назад
+//        Row(
+//            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.SpaceBetween,
+//            verticalAlignment = Alignment.CenterVertically
+//        ) {
+////            IconButton(
+////                onClick = { navController.popBackStack() }
+////            ) {
+////                Image(
+////                    painter = painterResource(R.drawable.arrow_back),
+////                    contentDescription = "Назад",
+////                    modifier = Modifier.size(24.dp)
+////                )
+////            }
+//
+//            Text(
+//                text = "Добавить фильм",
+//                color = Color(0xFF17418C),
+//                fontSize = 18.sp,
+//                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+//            )
+//
+//            Spacer(modifier = Modifier.width(48.dp))
+//        }
+//
+//        Spacer(modifier = Modifier.height(16.dp))
+//
+//        // Сообщение об ошибке
+//        if (error != null) {
+//            Text(
+//                text = error!!,
+//                color = MaterialTheme.colorScheme.error,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(bottom = 16.dp)
+//            )
+//        }
+//
+//        // Сообщение об успехе
+//        if (addSuccess) {
+//            Text(
+//                text = "Фильм успешно добавлен!",
+//                color = Color.Green,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(bottom = 16.dp)
+//            )
+//        }
+
+        // Форма
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            BasicTextField(
-                value = title,
-                onValueChange = {title = it},
-                modifier = Modifier
-                    .height(36.dp)
-                    .border(
-                        width = 1.dp,
-                        color = Color(0xFF4CBBBF),
-                        shape = RoundedCornerShape(10.dp)
-                    )
-                    .padding(4.dp),
-                textStyle = TextStyle(
+            // Название фильма
+            Column {
+                Text(
+                    text = "Название фильма:",
                     color = Color(0xFF17418C),
-                    textAlign = TextAlign.Center,
-                    fontSize = 18.sp
-                ),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if(title.isEmpty()){
-                            Text(
-                                text = "Название фильма",
-                                color = Color.Gray,
-                                textAlign = TextAlign.Center,
-                                fontSize = 18.sp
-                            )
-                        }
-                        innerTextField()
-                    }
-                }
-            )
+                    fontSize = 14.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                BasicTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF4CBBBF),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 12.dp),
+                    textStyle = TextStyle(
+                        color = Color(0xFF17418C),
+                        fontSize = 16.sp
+                    ),
+                    singleLine = true
+                )
+            }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
+            // Изображение
             Image(
                 painter = painterResource(R.drawable.film_img),
                 contentScale = ContentScale.Fit,
-                contentDescription = "image",
+                contentDescription = "Постер фильма",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(300.dp)
+                    .height(200.dp)
             )
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Text(
-            text = "Описание:",
-            color = Color(0xFF17418C),
-            fontSize = 12.sp
-        )
-
-        Spacer(modifier = Modifier.height(2.dp))
-
-        BasicTextField(
-            value = description,
-            onValueChange = { description = it },
-            modifier = Modifier
-                .height(220.dp)
-                .border(
-                    width = 1.dp,
-                    color = Color(0xFF4CBBBF),
-                    shape = RoundedCornerShape(10.dp)
+            // Описание
+            Column {
+                Text(
+                    text = "Описание:",
+                    color = Color(0xFF17418C),
+                    fontSize = 14.sp
                 )
-                .padding(2.dp)
-                .fillMaxWidth(),
-            textStyle = TextStyle(
-                color = Color(0xFF17418C),
-                fontSize = 12.sp
-            ),
-            decorationBox = { innerTextField ->
-                Box(
+                Spacer(modifier = Modifier.height(4.dp))
+                BasicTextField(
+                    value = description,
+                    onValueChange = { description = it },
                     modifier = Modifier
-                        .padding(4.dp),
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF4CBBBF),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    textStyle = TextStyle(
+                        color = Color(0xFF17418C),
+                        fontSize = 14.sp
+                    )
+                )
+            }
+
+            // Рейтинги
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // КиноПоиск
+                Column(
+                    modifier = Modifier.weight(1f)
                 ) {
-                    innerTextField()
+                    Text(
+                        text = "КиноПоиск:",
+                        color = Color(0xFF17418C),
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        BasicTextField(
+                            value = kinopoiskRating,
+                            onValueChange = { newValue ->
+                                if (newValue.matches(Regex("^\\d*(\\.\\d*)?$")) && newValue.length <= 4) {
+                                    kinopoiskRating = newValue
+                                }
+                            },
+                            modifier = Modifier
+                                .width(60.dp)
+                                .height(40.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFF4CBBBF),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(horizontal = 8.dp),
+                            textStyle = TextStyle(
+                                color = Color(0xFF17418C),
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center
+                            ),
+                            singleLine = true
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("из 10", fontSize = 12.sp, color = Color.Gray)
+                    }
+                }
+
+                // IMDb
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "IMDb:",
+                        color = Color(0xFF17418C),
+                        fontSize = 14.sp
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        BasicTextField(
+                            value = imdbRating,
+                            onValueChange = { newValue ->
+                                if (newValue.matches(Regex("^\\d*(\\.\\d*)?$")) && newValue.length <= 4) {
+                                    imdbRating = newValue
+                                }
+                            },
+                            modifier = Modifier
+                                .width(60.dp)
+                                .height(40.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFF4CBBBF),
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .padding(horizontal = 8.dp),
+                            textStyle = TextStyle(
+                                color = Color(0xFF17418C),
+                                fontSize = 14.sp,
+                                textAlign = TextAlign.Center
+                            ),
+                            singleLine = true
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text("из 10", fontSize = 12.sp, color = Color.Gray)
+                    }
                 }
             }
-        )
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(){
-
+            // Жанр
             Column {
                 Text(
-                    text = "Кинопоиск:",
+                    text = "Жанр:",
                     color = Color(0xFF17418C),
-                    fontSize = 12.sp
+                    fontSize = 14.sp
                 )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    BasicTextField(
-                        value =kinopoiskRating,
-                        onValueChange = { kinopoiskRating = it },
-                        modifier = Modifier
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFF4CBBBF),
-                                shape = RoundedCornerShape(7.dp)
-                            )
-                            .width(28.dp),
-                        textStyle = TextStyle(
-                            color = Color(0xFF17418C),
-                            fontSize = 10.sp,
-                            textAlign = TextAlign.Center
-                        ),
-                        decorationBox = { innerTextField ->
-                            Box(
-                                modifier = Modifier
-                                    .padding(4.dp),
-                            ) {
-                                innerTextField()
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text(
-                        text = "из 10",
-                        fontSize = 10.sp,
-                        textAlign = TextAlign.Center,
-                        color = Color(0xFF17418C)
-                    )
-                }
-
+                Spacer(modifier = Modifier.height(4.dp))
+                BasicTextField(
+                    value = genre,
+                    onValueChange = { genre = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF4CBBBF),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 12.dp),
+                    textStyle = TextStyle(
+                        color = Color(0xFF17418C),
+                        fontSize = 14.sp
+                    ),
+                    singleLine = true
+                )
             }
 
-            Spacer(modifier = Modifier.width(15.dp))
-
+            // Страна
             Column {
                 Text(
-                    text = "IMDb:",
+                    text = "Страна:",
                     color = Color(0xFF17418C),
-                    fontSize = 12.sp
+                    fontSize = 14.sp
                 )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    BasicTextField(
-                        value = imdbRating,
-                        onValueChange = { imdbRating = it },
-                        modifier = Modifier
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFF4CBBBF),
-                                shape = RoundedCornerShape(7.dp)
-                            )
-                            .width(28.dp),
-                        textStyle = TextStyle(
-                            color = Color(0xFF17418C),
-                            fontSize = 10.sp,
-                            textAlign = TextAlign.Center
-                        ),
-                        decorationBox = { innerTextField ->
-                            Box(
-                                modifier = Modifier
-                                    .padding(4.dp),
-                            ) {
-                                innerTextField()
-                            }
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text(
-                        text = "из 10",
-                        fontSize = 10.sp,
-                        textAlign = TextAlign.Center,
-                        color = Color(0xFF17418C)
-                    )
-                }
+                Spacer(modifier = Modifier.height(4.dp))
+                BasicTextField(
+                    value = countries,
+                    onValueChange = { countries = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF4CBBBF),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 12.dp),
+                    textStyle = TextStyle(
+                        color = Color(0xFF17418C),
+                        fontSize = 14.sp
+                    ),
+                    singleLine = true
+                )
             }
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Жанр: ",
-                fontSize = 12.sp,
-                color = Color(0xFF17418C)
-            )
-
-            BasicTextField(
-                value = genre,
-                onValueChange = {genre = it},
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = Color(0xFF4CBBBF),
-                        shape = RoundedCornerShape(7.dp)
-                    ),
-                textStyle = TextStyle(
+            // Режиссер
+            Column {
+                Text(
+                    text = "Режиссер:",
                     color = Color(0xFF17418C),
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Center
-                ),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp),
-                    ) {
-                        innerTextField()
-                    }
-                }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Страны: ",
-                fontSize = 12.sp,
-                color = Color(0xFF17418C)
-            )
-
-            BasicTextField(
-                value = countries,
-                onValueChange = { countries = it },
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = Color(0xFF4CBBBF),
-                        shape = RoundedCornerShape(7.dp)
+                    fontSize = 14.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                BasicTextField(
+                    value = director,
+                    onValueChange = { director = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .border(
+                            width = 1.dp,
+                            color = Color(0xFF4CBBBF),
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(horizontal = 12.dp),
+                    textStyle = TextStyle(
+                        color = Color(0xFF17418C),
+                        fontSize = 14.sp
                     ),
-                textStyle = TextStyle(
-                    color = Color(0xFF17418C),
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Center
-                ),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp),
-                    ) {
-                        innerTextField()
-                    }
-                }
+                    singleLine = true
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Кнопка добавления
+            BasicButton(
+                buttonText = if (isLoading) "Добавление..." else "Добавить фильм",
+                isFormValid = isFormValid && !isLoading,
+                onClick = {
+                    val kpRating = kinopoiskRating.toDoubleOrNull() ?: 0.0
+                    val imdbRatingValue = imdbRating.toDoubleOrNull() ?: 0.0
+
+                    viewModel.addMovie(
+                        title = title,
+                        description = description,
+                        ratingKinoPoisk = kpRating,
+                        ratingIMDB = imdbRatingValue,
+                        genre = genre,
+                        country = countries,
+                        director = director
+                    )
+                },
+                isLoading = isLoading
             )
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Режиссер: ",
-                fontSize = 12.sp,
-                color = Color(0xFF17418C)
-            )
-
-            BasicTextField(
-                value = director,
-                onValueChange = { director = it },
-                modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = Color(0xFF4CBBBF),
-                        shape = RoundedCornerShape(7.dp)
-                    ),
-                textStyle = TextStyle(
-                    color = Color(0xFF17418C),
-                    fontSize = 10.sp,
-                    textAlign = TextAlign.Center
-                ),
-                decorationBox = { innerTextField ->
-                    Box(
-                        modifier = Modifier
-                            .padding(4.dp),
-                    ) {
-                        innerTextField()
-                    }
-                }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        BasicButton(
-            buttonText = "Добавить",
-            isFormValid = true,
-            onClick = {},
-            isLoading = false
-        )
     }
 }
 

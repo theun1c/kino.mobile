@@ -1,14 +1,19 @@
 package com.example.kinomobileapp.ui.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.kinomobileapp.ui.screens.AddScreen
 import com.example.kinomobileapp.ui.screens.LoginScreen
 import com.example.kinomobileapp.ui.screens.MovieCatalogScreen
+import com.example.kinomobileapp.ui.viewmodels.MovieViewModel
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
+    val movieViewModel: MovieViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         startDestination = "login"
@@ -25,7 +30,19 @@ fun AppNavigation(navController: NavHostController) {
         }
 
         composable("movie_catalog") {
-            MovieCatalogScreen()
+            MovieCatalogScreen(
+                navController = navController,
+                viewModel = movieViewModel
+            )
+        }
+
+        composable ("add_screen") {
+            AddScreen(
+                navController = navController,
+                onMovieAdded = {
+                    movieViewModel.loadMovies()
+                }
+            )
         }
     }
 }
