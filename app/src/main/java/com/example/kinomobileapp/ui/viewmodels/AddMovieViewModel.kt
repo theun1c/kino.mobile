@@ -45,7 +45,7 @@ class AddMovieViewModel @Inject constructor(
 
             try {
                 val movie = Movie(
-                    id = "", // PocketBase сам сгенерирует ID
+                    id = "",
                     title = title,
                     description = description,
                     ratingKinoPoisk = ratingKinoPoisk,

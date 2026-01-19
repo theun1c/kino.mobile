@@ -53,7 +53,6 @@ class MovieViewModel @Inject constructor(
             try {
                 val isDeleted = repository.deleteMovie(movieId)
                 if (isDeleted) {
-                    // Обновляем локальный список
                     val currentMovies = _movies.value.toMutableList()
                     currentMovies.removeAll { it.id == movieId }
                     _movies.value = currentMovies

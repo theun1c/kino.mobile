@@ -114,34 +114,8 @@ fun UpdateScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 32.dp, vertical = 16.dp),
+            .padding(horizontal = 32.dp, vertical = 32.dp),
     ) {
-        // Заголовок
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Редактировать фильм",
-                color = Color(0xFF17418C),
-                fontSize = 20.sp,
-                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Сообщение об ошибке
-        if (error != null) {
-            Text(
-                text = error!!,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            )
-        }
 
         if (isLoading && movie == null) {
             Box(
@@ -158,18 +132,12 @@ fun UpdateScreen(
             ) {
                 // Название фильма
                 Column {
-                    Text(
-                        text = "Название фильма:",
-                        color = Color(0xFF17418C),
-                        fontSize = 14.sp
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
                     BasicTextField(
                         value = title,
                         onValueChange = { title = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(48.dp)
+                            .height(24.dp)
                             .border(
                                 width = 1.dp,
                                 color = Color(0xFF4CBBBF),
@@ -178,9 +146,25 @@ fun UpdateScreen(
                             .padding(horizontal = 12.dp),
                         textStyle = TextStyle(
                             color = Color(0xFF17418C),
-                            fontSize = 16.sp
+                            fontSize = 15.sp
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        decorationBox = { innerTextField ->
+                            Box(
+                                modifier = Modifier.fillMaxSize(),
+                                contentAlignment = Alignment.CenterStart
+                            ){
+                                if (title.isEmpty()) {
+                                    Text(
+                                        text = "Введите название фильма",
+                                        color = Color.Gray,
+                                        fontSize = 15.sp,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
                     )
                 }
 
@@ -191,7 +175,7 @@ fun UpdateScreen(
                     contentDescription = "Постер фильма",
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .height(300.dp)
                 )
 
                 // Описание
@@ -207,7 +191,7 @@ fun UpdateScreen(
                         onValueChange = { description = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(120.dp)
+                            .height(180.dp)
                             .border(
                                 width = 1.dp,
                                 color = Color(0xFF4CBBBF),
@@ -222,20 +206,16 @@ fun UpdateScreen(
                 }
 
                 // Рейтинги
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                Row() {
                     // КиноПоиск
                     Column(
-                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = "КиноПоиск:",
                             color = Color(0xFF17418C),
                             fontSize = 14.sp
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
+
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -247,36 +227,44 @@ fun UpdateScreen(
                                     }
                                 },
                                 modifier = Modifier
-                                    .width(60.dp)
-                                    .height(40.dp)
+                                    .width(30.dp)
+                                    .height(20.dp)
                                     .border(
                                         width = 1.dp,
                                         color = Color(0xFF4CBBBF),
                                         shape = RoundedCornerShape(8.dp)
                                     )
-                                    .padding(horizontal = 8.dp),
+                                    .padding(horizontal = 4.dp),
                                 textStyle = TextStyle(
                                     color = Color(0xFF17418C),
                                     fontSize = 14.sp,
                                     textAlign = TextAlign.Center
                                 ),
-                                singleLine = true
+                                singleLine = true,
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.CenterStart  // ВЕРТИКАЛЬНО ПО ЦЕНТРУ
+                                    ) {
+                                        innerTextField()
+                                    }
+                                }
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("из 10", fontSize = 12.sp, color = Color.Gray)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("из 10", fontSize = 12.sp, color = Color(0xFF17418C))
                         }
                     }
 
+                    Spacer(modifier = Modifier.width(10.dp))
+
                     // IMDb
                     Column(
-                        modifier = Modifier.weight(1f)
                     ) {
                         Text(
                             text = "IMDb:",
                             color = Color(0xFF17418C),
                             fontSize = 14.sp
                         )
-                        Spacer(modifier = Modifier.height(4.dp))
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -288,116 +276,149 @@ fun UpdateScreen(
                                     }
                                 },
                                 modifier = Modifier
-                                    .width(60.dp)
-                                    .height(40.dp)
+                                    .width(30.dp)
+                                    .height(20.dp)
                                     .border(
                                         width = 1.dp,
                                         color = Color(0xFF4CBBBF),
                                         shape = RoundedCornerShape(8.dp)
                                     )
-                                    .padding(horizontal = 8.dp),
+                                    .padding(horizontal = 4.dp),
                                 textStyle = TextStyle(
                                     color = Color(0xFF17418C),
                                     fontSize = 14.sp,
                                     textAlign = TextAlign.Center
                                 ),
-                                singleLine = true
+                                singleLine = true,
+                                decorationBox = { innerTextField ->
+                                    Box(
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentAlignment = Alignment.CenterStart  // ВЕРТИКАЛЬНО ПО ЦЕНТРУ
+                                    ) {
+                                        innerTextField()
+                                    }
+                                }
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("из 10", fontSize = 12.sp, color = Color.Gray)
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("из 10", fontSize = 12.sp, color = Color(0xFF17418C))
                         }
                     }
                 }
 
                 // Жанр
-                Column {
+                Row {
                     Text(
                         text = "Жанр:",
                         color = Color(0xFF17418C),
                         fontSize = 14.sp
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Spacer(modifier = Modifier.width(2.dp))
+
                     BasicTextField(
                         value = genre,
                         onValueChange = { genre = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(40.dp)
+                            .height(20.dp)
                             .border(
                                 width = 1.dp,
                                 color = Color(0xFF4CBBBF),
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .padding(horizontal = 12.dp),
+                            .padding(horizontal = 8.dp),
                         textStyle = TextStyle(
                             color = Color(0xFF17418C),
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        decorationBox = { innerTextField ->
+                            Box(
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                innerTextField()
+                            }
+                        }
                     )
                 }
 
                 // Страна
-                Column {
+                Row {
                     Text(
                         text = "Страна:",
                         color = Color(0xFF17418C),
                         fontSize = 14.sp
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Spacer(modifier = Modifier.width(2.dp))
+
                     BasicTextField(
                         value = countries,
                         onValueChange = { countries = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(40.dp)
+                            .height(20.dp)
                             .border(
                                 width = 1.dp,
                                 color = Color(0xFF4CBBBF),
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .padding(horizontal = 12.dp),
+                            .padding(horizontal = 8.dp),
                         textStyle = TextStyle(
                             color = Color(0xFF17418C),
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        decorationBox = { innerTextField ->
+                            Box(
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                innerTextField()
+                            }
+                        }
                     )
                 }
 
                 // Режиссер
-                Column {
+                Row {
                     Text(
                         text = "Режиссер:",
                         color = Color(0xFF17418C),
                         fontSize = 14.sp
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.width(2.dp))
                     BasicTextField(
                         value = director,
                         onValueChange = { director = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(40.dp)
+                            .height(20.dp)
                             .border(
                                 width = 1.dp,
                                 color = Color(0xFF4CBBBF),
                                 shape = RoundedCornerShape(8.dp)
                             )
-                            .padding(horizontal = 12.dp),
+                            .padding(horizontal = 8.dp),
                         textStyle = TextStyle(
                             color = Color(0xFF17418C),
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
                         ),
-                        singleLine = true
+                        singleLine = true,
+                        decorationBox = { innerTextField ->
+                            Box(
+                                contentAlignment = Alignment.CenterStart
+                            ) {
+                                innerTextField()
+                            }
+                        }
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 // Кнопка обновления
                 BasicButton(
-                    buttonText = if (isLoading) "Обновление..." else "Обновить фильм",
+                    buttonText = if (isLoading) "Обновление..." else "Обновить",
                     isFormValid = isFormValid && !isLoading,
                     onClick = {
                         val kpRating = kinopoiskRating.toDoubleOrNull() ?: 0.0
@@ -416,28 +437,7 @@ fun UpdateScreen(
                     },
                     isLoading = isLoading
                 )
-
-                // Кнопка отмены
-                if (!isLoading) {
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Button(
-                        onClick = { navController.popBackStack() },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.LightGray,
-                            contentColor = Color.DarkGray
-                        )
-                    ) {
-                        Text("Отмена")
-                    }
-                }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun UpdateScreenPreview() {
-    UpdateScreen(movieId = "test_id")
 }

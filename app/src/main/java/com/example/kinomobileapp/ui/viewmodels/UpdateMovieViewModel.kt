@@ -28,7 +28,6 @@ class UpdateMovieViewModel @Inject constructor(
     private val _updateSuccess = MutableStateFlow(false)
     val updateSuccess: StateFlow<Boolean> = _updateSuccess.asStateFlow()
 
-    // Загружаем фильм по ID
     fun loadMovie(movieId: String) {
         viewModelScope.launch {
             _isLoading.value = true
@@ -49,7 +48,6 @@ class UpdateMovieViewModel @Inject constructor(
         }
     }
 
-    // Обновляем фильм
     fun updateMovie(
         movieId: String,
         title: String,
